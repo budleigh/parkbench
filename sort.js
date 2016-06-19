@@ -269,9 +269,12 @@ function quickSort (array, lo, hi) {
 
     - use two index pointers i and j, pointing to the low
       and high indices for the subarray.
+    - identify a pivot
     - iterate through the array, from the front and back,
       until the two pointers converge
-        - if
+        - if we find a value on the left larger than the pivot
+          -if we also find a value on the right smaller
+          -swap!
     */
 
     var pivot = array[Math.floor((hi + lo) / 2)],
