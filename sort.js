@@ -578,11 +578,13 @@ function bucketSort (array) {
   in mergeSort when we get near n's of ~150,000.
   */
   return buckets.reduce(function (results, bucket) {
-    // "The Merging of the Buckets" by Wagner
-    // all of the values in the buckets are already sorted
-    // the buckets THEMSELVES are sorted since they had
-    // value ranges - ie all the values in bucket index x
-    // are smaller than all the values in bucket index x+1.
+    /*
+    "The Merging of the Buckets" by Wagner
+    all of the values in the buckets are already sorted
+    the buckets THEMSELVES are sorted since they had
+    alue ranges - ie all the values in bucket index x
+    are smaller than all the values in bucket index x+1.
+    */
     return results.concat(bucket);
   }, []);
 }
