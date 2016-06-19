@@ -514,11 +514,77 @@ heapSort.name = 'heapSort';
 function bucketSort (array) {
   /*
   COMPLEXITY: O(n^2)
+
+  A super simple sort that bears similarities to
+  other sorts, sort of a combination of radix and
+  mergesort. This, like shellsort/radixsort, is
+  very implementation dependent, in particular
+  the means by which you divide values into buckets
+  and how many buckets there are.
+
+  - generate buckets
+  - go through the array, putting values into buckets
+    - these buckets have value ranges, ie
+    [] [] [], bucket 1 range 0-5, bucket 2 6-10, 3 11-15
+    - the values go into these buckets in sorted order
+  - merge the sorted buckets together to get the final
+    sorted array!
   */
 
-  var max = array.getMax();
+  function insertSorted (value, array) {
+    /*
+    Inserts the value into the array while
+    maintaining sorted order. This is the
+    gruntwork of bucketSort.
+    */
 
-  return array;
+    for (var x = 0; x < array.length; x++) {
+      if (value < array[x]) {
+        array.splice(x, 0, value);
+      }
+
+      else if (x === array.length - 1) {
+        array.push(value);
+      }
+    }
+
+    return array;
+  }
+
+  /*
+  this is one of the variables of bucketsort implementation
+  this one is based on the USF bucketsort visualization -
+  the number of buckets is === the length of the array.
+  obviously not the most space efficient, but it makes
+  distribution of values quite simple.
+  */
+  var max = array.getMax();
+  var buckets = new Array(array.length);
+  buckets.fill([]);
+
+  for (var x = 0; x < array.length; x++) {
+    // distribute values into buckets
+    // this is not super exact, we just sort of want to
+    // get the values abstractly sorted and bucketed out
+    var value = array[x];
+    var bucketIndex = Math.round((value * array.length) / (max + 1));
+    // the values enter as sorted
+    insertSorted(value, buckets[bucketIndex]);
+  }
+
+  /*
+  Depending on how this is implemented, its not crazy to think
+  that we'd run into similar memory allocation issues like we see
+  in mergeSort when we get near n's of ~150,000.
+  */
+  return buckets.reduce(function (results, bucket) {
+    // "The Merging of the Buckets" by Wagner
+    // all of the values in the buckets are already sorted
+    // the buckets THEMSELVES are sorted since they had
+    // value ranges - ie all the values in bucket index x
+    // are smaller than all the values in bucket index x+1.
+    return results.concat(bucket);
+  }, []);
 }
 bucketSort.name = 'bucketSort';
 
@@ -663,7 +729,7 @@ function test (fn, arraySize, genCaseIterations) {
   return avg;
 }
 
-var arraySize = 15;
+var arraySize = 5000;  // change me to something between 50k and 125k to see better comparison!
 console.log('running tests on arrays of numbers, size ' + arraySize + '\n\n');
 
 [
