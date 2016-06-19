@@ -425,7 +425,10 @@ function heapSort (array) {
     // the parent of the absolute last value in the array.
 
     while (start >= 0) {
-      //
+      // iterate backwards through ALL of the valid parent
+      // nodes (since they're next to each other in the
+      // array), verifying EACH parent/child pair as being
+      // in valid heap configuration.
       siftDown(array, start, array.length - 1);
       start--;
     }
