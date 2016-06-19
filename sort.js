@@ -65,20 +65,6 @@ Array.prototype.shuffle = function () {
   return this;
 }
 
-function timeIt (fn, context) {
-  /*
-  times the function call in fractional seconds.
-  all arguments passed the function are given
-  to the function when it is called.
-  */
-
-  args = Array.from(arguments);
-  var start = new Date().getTime();
-  fn.apply(context, args.slice(2))
-
-  return ((new Date().getTime()) - start) / 1000;
-}
-
 Array.prototype.getMax = function () {
   /*
   Gets the maximum value in an unsorted arrayy. This is
@@ -95,6 +81,20 @@ Array.prototype.getMax = function () {
   }
 
   return max;
+}
+
+function timeIt (fn, context) {
+  /*
+  times the function call in fractional seconds.
+  all arguments passed the function are given
+  to the function when it is called.
+  */
+
+  args = Array.from(arguments);
+  var start = new Date().getTime();
+  fn.apply(context, args.slice(2))
+
+  return ((new Date().getTime()) - start) / 1000;
 }
 
 /*********
