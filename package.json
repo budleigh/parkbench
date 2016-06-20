@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/budleigh/parkbench/issues"
   },
-  "homepage": "https://github.com/budleigh/parkbench#readme"
+  "homepage": "https://github.com/budleigh/parkbench#readme",
+  "dependencies": {
+    "mocha": "^2.5.3"
+  }
 }
