@@ -628,7 +628,7 @@ function bucketSort (array) {
     sorted array!
   */
 
-
+  var max = array.getMax();
   /*
   this is one of the variables of bucketsort implementation
   this one is based on the USF bucketsort visualization -
@@ -636,7 +636,6 @@ function bucketSort (array) {
   obviously not the most space efficient, but it makes
   distribution of values quite simple.
   */
-  var max = array.getMax();
   var buckets = new Array(array.length);
   buckets.fill([]);
 
