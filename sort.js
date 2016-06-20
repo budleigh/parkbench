@@ -23,6 +23,28 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
+
+Array.prototype.insertSorted = function (value) {
+    /*
+    Inserts the value into the array while
+    maintaining sorted order. This is the
+    gruntwork of bucketSort, not currently used
+    by any other algorithms.
+    */
+
+    for (var x = 0; x < this.length; x++) {
+      if (value < this[x]) {
+        this.splice(x, 0, value);
+      }
+
+      else if (x === this.length - 1) {
+        this.push(value);
+      }
+    }
+
+    return this;
+  }
+
 Array.prototype.popAndInsert = function (from, to) {
   /*
   Removes the item at FROM, inserts the given item
@@ -243,11 +265,86 @@ function selectionSort (array) {
 selectionSort.name = 'selectionSort';
 
 function radixSort (array) {
+  /*
+  COMPLEXITY: O(kn)
+  */
+
   return array;
 }
 radixSort.name = 'radixSort';
 
 function shellSort (array) {
+  /*
+  COMPLEXITY: O(n logn)^2 - sort of
+
+  The key to shellsort is this quote from wikipedia:
+  "The idea is to arrange the list of elements so that,
+  starting anywhere, considering every hth element gives
+  a sorted list."
+
+  Where h refers to a group of predetermined 'gaps', ie
+  [512, 300, 100, 50, 5, 3, 1]
+
+  Where 1 becomes an insertion sort on a nearly-sorted
+  array.
+  */
+
+  function gapInsertionSort (array, gap, low, target) {
+    /*
+    This is a bespoke insertion sort, where the 'array'
+    is the sequence of values behind the target separated
+    by a distance of GAP. this is the incremental sorting
+    phase of shellsort. calling this for a gap of 1 is
+    simply a regular insertion sort, BUT the previous steps
+    ensure that it is ALMOST sorted, so the insertion sort
+    is extremely optimized.
+    */
+
+    var value = array[target];
+
+    for (var x = target - gap; x >= low; x -= gap) {
+      /*
+      Iterate backwards through the gap array until
+      you find the value's valid position, then swap.
+      */
+      if (value < array[x]) {
+        array.swap(target, x);
+        target -= gap;
+        // make sure you do the above, the target
+        // changed position!! I forgot at first.
+      } else {
+        break;
+      }
+    }
+
+    return array;
+  }
+
+  var gaps = [];
+  // for no reason whatsoever, I'm using all powers of 2
+  // such that 2^i <= half of the array length.
+  for (var x = 0; Math.pow(2, x) <= Math.ceil((array.length / 2)); x++) {
+    gaps.unshift(Math.pow(2, x));
+  }
+
+  // sort the array by each gap k, then the array is 'k-sorted'
+  for (var x = 0; x < gaps.length; x++) {
+    var gap = gaps[x];
+    var base = 0;
+
+    while (base < gap) {
+      // this becomes an insertion sort for 'subarrays' made
+      // of every GAP items starting from base (up to base=gap)
+      for (var j = base; j < array.length; j += gap) {
+        gapInsertionSort(array, gap, base, j);
+      }
+
+      // iterating once up to base ensures that any given
+      // base point on the array is sorted for that gap
+      base++;
+    }
+  }
+
   return array;
 }
 shellSort.name = 'shellSort';
@@ -531,25 +628,6 @@ function bucketSort (array) {
     sorted array!
   */
 
-  function insertSorted (value, array) {
-    /*
-    Inserts the value into the array while
-    maintaining sorted order. This is the
-    gruntwork of bucketSort.
-    */
-
-    for (var x = 0; x < array.length; x++) {
-      if (value < array[x]) {
-        array.splice(x, 0, value);
-      }
-
-      else if (x === array.length - 1) {
-        array.push(value);
-      }
-    }
-
-    return array;
-  }
 
   /*
   this is one of the variables of bucketsort implementation
@@ -569,7 +647,7 @@ function bucketSort (array) {
     var value = array[x];
     var bucketIndex = Math.round((value * array.length) / (max + 1));
     // the values enter as sorted
-    insertSorted(value, buckets[bucketIndex]);
+    buckets[bucketIndex].insertSorted(value);
   }
 
   /*
@@ -577,7 +655,7 @@ function bucketSort (array) {
   that we'd run into similar memory allocation issues like we see
   in mergeSort when we get near n's of ~150,000.
   */
-  return buckets.reduce(function (results, bucket) {
+  return buckets.reduce((results, bucket) => {
     /*
     "The Merging of the Buckets" by Wagner
     all of the values in the buckets are already sorted
@@ -726,12 +804,12 @@ function test (fn, arraySize, genCaseIterations) {
     acc += timeIt(fn, null, array);
   }
   var avg = (acc / iter);
-  console.log('\t\tsorted' + iter + ' random arrays in an average of ' + (acc / iter) + ' seconds\n\n');
+  console.log('\t\tsorted ' + iter + ' random arrays in an average of ' + (acc / iter) + ' seconds\n\n');
 
   return avg;
 }
 
-var arraySize = 5000;  // change me to something between 50k and 125k to see better comparison!
+var arraySize = 100000;  // change me to something between 50k and 125k to see better comparison!
 console.log('running tests on arrays of numbers, size ' + arraySize + '\n\n');
 
 [
@@ -739,14 +817,14 @@ console.log('running tests on arrays of numbers, size ' + arraySize + '\n\n');
   mergeSort,
   quickSort,
   shellSort,
-  radixSort,
-  bubbleSort,
-  bucketSort,
-  insertionSort,
-  selectionSort
+  // radixSort,
+  // bubbleSort,
+  bucketSort
+  // insertionSort,
+  // selectionSort
 ].forEach(function (fn) {
   test(fn, arraySize);
 
   // set up exports/module, who knows
-  exports[fn.name] = fn;
+  // exports[fn.name] = fn;
 });
