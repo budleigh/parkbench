@@ -1,0 +1,19 @@
+{
+  "name": "parkbench",
+  "version": "0.0.1",
+  "description": "algorithms and data structures",
+  "main": "test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/budleigh/parkbench.git"
+  },
+  "author": "budleigh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/budleigh/parkbench/issues"
+  },
+  "homepage": "https://github.com/budleigh/parkbench#readme"
+}
