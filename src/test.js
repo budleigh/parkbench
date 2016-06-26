@@ -9,7 +9,7 @@ const array = require('./array.js');
 const util = require('./util.js');
 const _ = require('../node_modules/underscore/underscore.js');
 
-const ARRAYSIZE = 5000;
+var ARRAYSIZE = 5000;
 
 function benchMarkSort (fn, arraySize, genCaseIterations) {
   /*
@@ -25,7 +25,7 @@ function benchMarkSort (fn, arraySize, genCaseIterations) {
   try {
     testSort(fn);
   } catch (err) {
-    console.log('' + fn.name + 'errored out: ' + err + '\n\n');
+    console.log('' + fn.name + ' errored out: ' + err + '\n\n');
     return;
   }
 
@@ -95,6 +95,14 @@ function testSort (fn) {
 function runFromTerminal () {
   switch (process.argv[2]) {
     case 'bench':
+      if (process.argv[3] !== undefined) {
+        var arrsizeArg = parseInt(process.argv[3]);
+        ARRAYSIZE = typeof arrsizeArg === 'number' ? arrsizeArg : ARRAYSIZE;
+
+        if (ARRAYSIZE > 75000) {
+          console.log('you put in a big number for the test array size.\nmight take a while!');
+        }
+      }
       _.each(array, (fn) => {
         benchMarkSort(fn, ARRAYSIZE, 10);
       });
@@ -102,6 +110,15 @@ function runFromTerminal () {
     default:
       console.log('unknown argument: ' + process.argv[2]);
   }
+}
+
+function computeMaxCallStackSize() {
+    try {
+        return 1 + computeMaxCallStackSize();
+    } catch (e) {
+        // Call stack overflow
+        return 1;
+    }
 }
 
 runFromTerminal();

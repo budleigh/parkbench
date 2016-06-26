@@ -14,6 +14,7 @@ function verifySorted (array) {
 
   return true;
 }
+module.exports.verifySorted = verifySorted;
 
 function timeIt (fn, context) {
   /*
@@ -28,12 +29,14 @@ function timeIt (fn, context) {
 
   return ((new Date().getTime()) - start) / 1000;
 }
+module.exports.timeIt = timeIt;
 
 function getRandomInt(min, max) {
   // unnecessary comment: GIVES YOU A RANDOM INT
   // BETWEEN MIN AND MAX, EXCLUDING MAX (I think)
   return Math.floor(Math.random() * (max - min)) + min;
 }
+module.exports.getRandomInt = getRandomInt;
 
 function genRandomArray (size) {
   // all elements in this array are randomly chosen
@@ -47,6 +50,7 @@ function genRandomArray (size) {
 
   return out;
 }
+module.exports.genRandomArray = genRandomArray;
 
 function genEqualsArray (size) {
   // all elements of this array are EQUAL. oddly
@@ -60,6 +64,7 @@ function genEqualsArray (size) {
 
   return out;
 }
+module.exports.genEqualsArray = genEqualsArray;
 
 function genSortedArray (size) {
   // the array is SORTED in ascending order.
@@ -72,6 +77,7 @@ function genSortedArray (size) {
 
   return out;
 }
+module.exports.genSortedArray = genSortedArray;
 
 function genReversedArray (size) {
   // this is the 'worst case' for a lot of
@@ -85,15 +91,4 @@ function genReversedArray (size) {
 
   return out;
 }
-
-[
-  verifySorted,
-  timeIt,
-  getRandomInt,
-  genRandomArray,
-  genEqualsArray,
-  genSortedArray,
-  genReversedArray
-].forEach(function (fn) {
-  exports[fn.name] = fn;
-});
+module.exports.genReversedArray = genReversedArray;

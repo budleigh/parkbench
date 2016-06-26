@@ -187,6 +187,7 @@ function mergeSort (array) {
   }
 }
 mergeSort.name = 'mergeSort';
+module.exports.mergeSort = mergeSort;
 
 function insertionSort (array) {
   /*
@@ -211,6 +212,7 @@ function insertionSort (array) {
   return array;
 }
 insertionSort.name = 'insertionSort';
+module.exports.insertionSort = insertionSort;
 
 function selectionSort (array) {
   /*
@@ -246,6 +248,7 @@ function selectionSort (array) {
   return array;
 }
 selectionSort.name = 'selectionSort';
+module.exports.selectionSort = selectionSort;
 
 function radixSort (array) {
   /*
@@ -261,6 +264,7 @@ function radixSort (array) {
   return array;
 }
 radixSort.name = 'radixSort';
+module.exports.radixSort = radixSort;
 
 function shellSort (array) {
   /*
@@ -337,6 +341,7 @@ function shellSort (array) {
   return array;
 }
 shellSort.name = 'shellSort';
+module.exports.shellSort = shellSort;
 
 function quickSort (array, lo, hi) {
   /*
@@ -419,6 +424,7 @@ function quickSort (array, lo, hi) {
   return array;
 }
 quickSort.name = 'quickSort';
+module.exports.quickSort = quickSort;
 
 function bubbleSort (array) {
   /*
@@ -446,6 +452,7 @@ function bubbleSort (array) {
   return array;
 }
 bubbleSort.name = 'bubbleSort';
+module.exports.bubbleSort = bubbleSort;
 
 function heapSort (array) {
   /*
@@ -596,6 +603,7 @@ function heapSort (array) {
   return array;
 }
 heapSort.name = 'heapSort';
+module.exports.heapSort = heapSort;
 
 function bucketSort (array) {
   /*
@@ -656,6 +664,7 @@ function bucketSort (array) {
   }, []);
 }
 bucketSort.name = 'bucketSort';
+module.exports.bucketSort = bucketSort;
 
 function bogoSort (array) {
   /*
@@ -676,18 +685,4 @@ function bogoSort (array) {
   return array;
 }
 bogoSort.name = 'bogoSort';
-
-[
-  heapSort,
-  mergeSort,
-  quickSort,
-  shellSort,
-  radixSort,
-  bubbleSort,
-  bucketSort,
-  insertionSort,
-  selectionSort
-].forEach(function (fn) {
-  // set up exports/module, who knows
-  exports[fn.name] = fn;
-});
+// module.exports.bogoSort = bogoSort   <-- maybe someday
