@@ -19,12 +19,7 @@
 Helper Functions
 ***************/
 
-function getRandomInt(min, max) {
-  // unnecessary comment: GIVES YOU A RANDOM INT
-  // BETWEEN MIN AND MAX, EXCLUDING MAX (I think)
-  return Math.floor(Math.random() * (max - min)) + min;
-}
-
+const util = require('./util.js');
 
 Array.prototype.insertSorted = function (value) {
     /*
@@ -105,20 +100,6 @@ Array.prototype.getMax = function () {
   }
 
   return max;
-}
-
-function timeIt (fn, context) {
-  /*
-  times the function call in fractional seconds.
-  all arguments passed the function are given
-  to the function when it is called.
-  */
-
-  args = Array.from(arguments);
-  var start = new Date().getTime();
-  fn.apply(context, args.slice(2))
-
-  return ((new Date().getTime()) - start) / 1000;
 }
 
 /*********
@@ -452,7 +433,7 @@ function bubbleSort (array) {
       - swap the items
   */
 
-  while (!(verifySorted(array))) {
+  while (!(util.verifySorted(array))) {
     for (var x = 0; x < array.length; x++) {
       if (array[x] > array[x + 1]) {
         array.swap(x, x + 1);
@@ -618,7 +599,8 @@ heapSort.name = 'heapSort';
 
 function bucketSort (array) {
   /*
-  COMPLEXITY: O(n^2)
+  COMPLEXITY: O(n^2) - CURRENTLY FAILS IF NEGATIVES
+  ARE IN THE INPUT
 
   A super simple sort that bears similarities to
   other sorts, sort of a combination of radix and
@@ -687,7 +669,7 @@ function bogoSort (array) {
   - Die of old age.
   */
 
-  while (!(verifySorted(array))) {
+  while (!(util.verifySorted(array))) {
     array.shuffle();
   }
 
@@ -702,7 +684,7 @@ bogoSort.name = 'bogoSort';
   shellSort,
   radixSort,
   bubbleSort,
-  bucketSort
+  bucketSort,
   insertionSort,
   selectionSort
 ].forEach(function (fn) {

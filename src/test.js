@@ -5,79 +5,11 @@
   bottom to ensure it is run for testing.
 **/
 
-require('./array.js');
-
-var assert = require('chai').assert;
+const array = require('./array.js');
+const util = require('./util.js');
+const _ = require('../node_modules/underscore/underscore.js');
 
 const ARRAYSIZE = 5000;
-
-function verifySorted (array) {
-  /*
-  Ensures that the array is sorted by comparing
-  values to those in indices directly ahead of it.
-  If the forward index value is SMALLER than it,
-  the array is obviously not correctly sorted in
-  ascending order.
-  */
-  for (var x = 0; x < array.length; x++) {
-    if (array[x] > array[x + 1]) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-function genRandomArray (size) {
-  // all elements in this array are randomly chosen
-  // integers between 0 and (size). this is the
-  // 'practical' use-case for sorting algorithms.
-  out = [];
-  for (var x = 0; x < size; x++) {
-    out.push(getRandomInt((-1 * size), size));
-    // includes negatives
-  }
-
-  return out;
-}
-
-function genEqualsArray (size) {
-  // all elements of this array are EQUAL. oddly
-  // we expect the shittier algorithms to do
-  // better here because they are simpler or
-  // do not blindly recurse.
-  out = [];
-  for (var x = 0; x < size; x++) {
-    out.push(5);
-  }
-
-  return out;
-}
-
-function genSortedArray (size) {
-  // the array is SORTED in ascending order.
-  // again, we expect the shittier algo's to
-  // do better here (generally 0 time).
-  out = [];
-  for (var x = 0; x < size; x++) {
-    out.push(x + 1);
-  }
-
-  return out;
-}
-
-function genReversedArray (size) {
-  // this is the 'worst case' for a lot of
-  // the algorithms - the array is sorted in
-  // descending order, exactly the opposite
-  // of what the algorithm wants to achieve
-  out = [];
-  for (var x = size; x > 0; x--) {
-    out.push(x);
-  }
-
-  return out;
-}
 
 function benchMarkSort (fn, arraySize, genCaseIterations) {
   /*
@@ -90,7 +22,14 @@ function benchMarkSort (fn, arraySize, genCaseIterations) {
 
   console.log('Testing ' + fn.name);
 
-  if (!(verifySorted(fn(genRandomArray(arraySize))))) {
+  try {
+    testSort(fn);
+  } catch (err) {
+    console.log('' + fn.name + 'errored out: ' + err + '\n\n');
+    return;
+  }
+
+  if (!(util.verifySorted(fn(util.genRandomArray(arraySize))))) {
     console.log('\tfailed!\n\n');
     return;
   } else {
@@ -98,16 +37,16 @@ function benchMarkSort (fn, arraySize, genCaseIterations) {
   }
 
   // our test arrays, generated fresh-baked for each function
-  var sortedArray = genSortedArray(arraySize),
-      randomArray = genRandomArray(arraySize),
-      equalsArray = genEqualsArray(arraySize),
-      reversedArray = genReversedArray(arraySize);
+  var sortedArray = util.genSortedArray(arraySize),
+      randomArray = util.genRandomArray(arraySize),
+      equalsArray = util.genEqualsArray(arraySize),
+      reversedArray = util.genReversedArray(arraySize);
 
   // run 'em
-  var sortedTime = timeIt(fn, null, sortedArray),
-      randomTime = timeIt(fn, null, randomArray),
-      equalsTime = timeIt(fn, null, equalsArray),
-      reversedTime = timeIt(fn, null, reversedArray);
+  var sortedTime = util.timeIt(fn, null, sortedArray),
+      randomTime = util.timeIt(fn, null, randomArray),
+      equalsTime = util.timeIt(fn, null, equalsArray),
+      reversedTime = util.timeIt(fn, null, reversedArray);
 
   console.log('\t\tsorted array completed in ' + sortedTime + ' seconds');
   console.log('\t\trandom array completed in ' + randomTime + ' seconds');
@@ -120,8 +59,8 @@ function benchMarkSort (fn, arraySize, genCaseIterations) {
   var iter = typeof genCaseIterations !== "number" ? 10 : genCaseIterations;
   var acc = 0;
   for (var x = 0; x < iter; x++) {
-    var array = genRandomArray(arraySize);
-    acc += timeIt(fn, null, array);
+    var array = util.genRandomArray(arraySize);
+    acc += util.timeIt(fn, null, array);
   }
   var avg = (acc / iter);
   console.log('\t\tsorted ' + iter + ' random arrays in an average of ' + (acc / iter) + ' seconds\n\n');
@@ -130,10 +69,10 @@ function benchMarkSort (fn, arraySize, genCaseIterations) {
 }
 
 function testSort (fn) {
-  var randomArray = genRandomArray(ARRAYSIZE),
-      sortedArray = genSortedArray(ARRAYSIZE),
-      equalsArray = genEqualsArray(ARRAYSIZE),
-      reversedArray = genReversedArray(ARRAYSIZE),
+  var randomArray = util.genRandomArray(ARRAYSIZE),
+      sortedArray = util.genSortedArray(ARRAYSIZE),
+      equalsArray = util.genEqualsArray(ARRAYSIZE),
+      reversedArray = util.genReversedArray(ARRAYSIZE),
       emptyArray = [];
 
   fn(randomArray);
@@ -142,13 +81,27 @@ function testSort (fn) {
   fn(reversedArray);
   fn(emptyArray);
 
-  if (!verifySorted(randomArray) ||
-      !verifySorted(sortedArray) ||
-      !verifySorted(equalsArray) ||
-      !verifySorted(reversedArray) ||
-      !verifySorted(emptyArray)) {
+  if (!util.verifySorted(randomArray) ||
+      !util.verifySorted(sortedArray) ||
+      !util.verifySorted(equalsArray) ||
+      !util.verifySorted(reversedArray) ||
+      !util.verifySorted(emptyArray)) {
     return false;
   }
 
   return true;
 }
+
+function runFromTerminal () {
+  switch (process.argv[2]) {
+    case 'bench':
+      _.each(array, (fn) => {
+        benchMarkSort(fn, ARRAYSIZE, 10);
+      });
+      break;
+    default:
+      console.log('unknown argument: ' + process.argv[2]);
+  }
+}
+
+runFromTerminal();

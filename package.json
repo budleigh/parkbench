@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/budleigh/parkbench#readme",
   "dependencies": {
-    "mocha": "^2.5.3"
+    "mocha": "^2.5.3",
+    "underscore": "^1.8.3"
   }
 }
